@@ -3,7 +3,7 @@ import { CreateHeroDto } from './dto/create-hero.dto';
 import { UpdateHeroDto } from './dto/update-hero.dto';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Hero } from 'src/schemas/Hero.schema';
+import { Hero } from 'src/hero/schemas/Hero.schema';
 
 @Injectable()
 export class HeroService {
