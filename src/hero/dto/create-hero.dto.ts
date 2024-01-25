@@ -1,11 +1,8 @@
-import { IsAlpha, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsAlpha, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateHeroDto {
-    @IsNumber()
-    id: number;
-
     @IsNotEmpty()
-    @IsString()
+    @IsAlpha()
     name: string
 
     @IsString()

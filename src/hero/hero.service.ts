@@ -1,53 +1,49 @@
-import { Injectable } from "@nestjs/common";
-import { Hero } from "./interfaces/hero.interface";
-import { CreateHeroDto } from "./dto/create-hero.dto";
-import { UpdateHeroDto } from "./dto/update-hero.dto";
+import { Injectable } from '@nestjs/common';
+import { CreateHeroDto } from './dto/create-hero.dto';
+import { UpdateHeroDto } from './dto/update-hero.dto';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Hero } from 'src/schemas/Hero.schema';
 
 @Injectable()
 export class HeroService {
-    private readonly heroes: Hero[] = [
-        {
-            id: 1,
-            name: "Rizky",
-            position: "backend engineer"
-        },
-    ]
+  constructor(@InjectModel(Hero.name) private heroModel: Model<Hero>) {}
 
-    findAll(): Hero[] {
-        return this.heroes
+  async findAll(): Promise<Hero[]> {
+    const res = await this.heroModel.find();
+    return res;
+  }
+
+  async findOne(id: any): Promise<Hero> {
+    const res = await this.heroModel.findById(id);
+    if (res) return res;
+
+    return null;
+  }
+
+  create(hero: CreateHeroDto) {
+    const createHero = new this.heroModel(hero);
+    return createHero.save();
+  }
+
+  async update(id: any, hero: UpdateHeroDto) {
+    let values = await this.heroModel.findById(id);
+    if (values) {
+      const value = await this.heroModel.updateOne({ _id: id }, { $set: hero });
+      return value;
     }
 
-    findOne(id: any) {
-        const values = this.heroes.find(hero => hero.id === parseInt(id))
-        if (values) return values
+    return null;
+  }
 
-        return null
+  async delete(id: any) {
+    let values = await this.heroModel.findById(id);
+
+    if (values) {
+      const deleteValue = await this.heroModel.deleteOne({ _id: id });
+      return deleteValue;
     }
 
-    create(hero: CreateHeroDto) {
-        this.heroes.push(hero)
-    }
-
-    update(id: any, hero: UpdateHeroDto) {
-        let values = this.heroes.find(hero => hero.id === parseInt(id))
-        if (values) {
-            values.name = hero.name
-            values.position = hero.position
-
-            return values
-        }
-
-        return null
-    }
-
-    delete(id: any) {
-        let values = this.heroes.findIndex(hero => hero.id === parseInt(id))
-
-        if (values !== -1) {
-            this.heroes.splice(values, 1)
-            return 1
-        }
-
-        return null
-    }
+    return null;
+  }
 }
