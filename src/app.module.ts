@@ -5,6 +5,7 @@ import { HeroModule } from './hero/hero.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from './config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { config } from './config';
       })
     }),
     HeroModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
