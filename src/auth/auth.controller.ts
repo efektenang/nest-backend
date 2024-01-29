@@ -26,8 +26,8 @@ export class AuthController {
         ok
       })
     }).catch((err) => {
-      return res.status(400).json({
-        message: 'Email is already exist'
+      return res.status(err.status).json({
+        error: err.response
       })
     })
   }
@@ -68,8 +68,8 @@ export class AuthController {
         updateCount: response.modifiedCount
       })
     } catch (error) {
-      res.status(500).json({
-        message: error.message
+      res.status(error.status).json({
+        error: error.response
       })
     }
   }
