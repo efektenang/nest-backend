@@ -10,7 +10,4 @@ export class CreateAuthDto {
 
     @IsString()
     password: string
-
-    @IsString()
-    createdAt: string
 }
