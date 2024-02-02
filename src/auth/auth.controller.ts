@@ -9,10 +9,13 @@ import {
   Res,
   HttpCode,
   Header,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { SignInDto } from './dto/sign-in.dto';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +36,7 @@ export class AuthController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @HttpCode(200)
   async findAll(@Res() res) {
     const users = await this.authService.findAll();
@@ -87,5 +91,10 @@ export class AuthController {
         message: error.message
       })
     }
+  }
+
+  @Post('login')
+  async signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto)
   }
 }

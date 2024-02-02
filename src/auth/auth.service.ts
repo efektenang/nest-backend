@@ -1,14 +1,16 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Auth } from './schemas/auth.schema';
 import { Model } from 'mongoose';
-import { hash } from 'bcryptjs'
+import * as bcrypt from 'bcrypt'
+import { SignInDto } from './dto/sign-in.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(Auth.name) private authModel: Model<Auth>) {}
+  constructor(@InjectModel(Auth.name) private authModel: Model<Auth>, private jwtService: JwtService) {}
   async create(createAuthDto: CreateAuthDto) {
     const checkEmail = await this.authModel.find({
       email: createAuthDto.email
@@ -18,7 +20,7 @@ export class AuthService {
     
     const saveUser = await this.authModel.create({
       ...createAuthDto,
-      password: await hash(createAuthDto.password, 10)
+      password: await bcrypt.hash(createAuthDto.password, 10)
     })
     return saveUser
   }
@@ -48,5 +50,19 @@ export class AuthService {
     if (!user) throw new Error('User not found!')
 
     return this.authModel.deleteOne({_id: id})
+  }
+
+  async signIn(signInDto: SignInDto): Promise<{access_token: string}> {
+    const user = await this.authModel.find({ email: signInDto.email })
+    if (user[0] === undefined) throw new UnauthorizedException('Email atau password salah')
+     
+    const isMatch = await bcrypt.compare(signInDto.password, user[0].password)
+    if(!isMatch) throw new UnauthorizedException("Email atau Password salah")
+
+    const payload = { sub: user[0]._id, email: user[0].email }
+    
+    return {
+      access_token: await this.jwtService.signAsync(payload)
+    }
   }
 }
