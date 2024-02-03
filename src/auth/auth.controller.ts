@@ -26,7 +26,7 @@ export class AuthController {
   async create(@Body() createAuthDto: CreateAuthDto, @Res() res) {
     return this.authService.create(createAuthDto).then((ok) => {
       return res.status(201).json({
-        ok
+        data: ok
       })
     }).catch((err) => {
       return res.status(err.status).json({

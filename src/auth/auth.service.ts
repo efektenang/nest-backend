@@ -13,17 +13,16 @@ import { EventsGateway } from 'src/events/events.gateway';
 export class AuthService {
   constructor(@InjectModel(Auth.name) private authModel: Model<Auth>, private jwtService: JwtService, private readonly eventsGateway: EventsGateway) {}
   async create(createAuthDto: CreateAuthDto) {
-    const checkEmail = await this.authModel.find({
-      email: createAuthDto.email
-    }).select('-password')
-
-    if (checkEmail) throw new ConflictException('Email is already exist')
     
     const saveUser = await this.authModel.create({
       ...createAuthDto,
       password: await bcrypt.hash(createAuthDto.password, 10)
+    }).catch((err) => {
+      throw new ConflictException('Email sudah terdaftar')
     })
+
     return saveUser
+    
   }
 
   async findAll() {
