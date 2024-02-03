@@ -1,34 +1,25 @@
-import { OnModuleInit } from '@nestjs/common';
-import {
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
-})
-export class EventsGateway implements OnModuleInit {
-  @WebSocketServer()
-  server: Server;
+@WebSocketGateway()
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
-  onModuleInit() {
-    this.server.of('/auth/login').on('connection', (socket) => {
-      console.log(socket.id);
-      console.log('is Log in');
-    });
+  @WebSocketServer() server: Server;
+
+  handleConnection(client: Socket) {
+    console.log(`Client connected: ${client.id}`);
   }
 
-  @SubscribeMessage('newMessage')
-  onNewMessage(@MessageBody() body: any) {
-    console.log(body);
+  handleDisconnect(client: Socket) {
+    console.log(`Client disconnected: ${client.id}`);
+  }
+
+  @SubscribeMessage('notifyLogin')
+  onNotifyLogin(user: any) {
     this.server.emit('onMessage', {
-      msg: 'New Message',
-      content: body,
-    });
+      msg: 'Berhasil Login',
+      data: user
+    })
   }
+
 }
