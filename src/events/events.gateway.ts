@@ -1,19 +1,9 @@
-import {
-  WebSocketGateway,
-  WebSocketServer,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
-  MessageBody,
-} from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({
-  cors: {
-    origin: 'https://nest-backend-zeta.vercel.app',
-  },
-})
+@WebSocketGateway()
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
   @WebSocketServer() server: Server;
 
   handleConnection(client: Socket) {
@@ -26,9 +16,11 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('notifyLogin')
   onNotifyLogin(user: any) {
+    console.log(user)
     this.server.emit('onMessage', {
-      msg: 'Berhasil Login',
-      data: user,
-    });
+      msg: `${user.email} is logged in`,
+      data: user
+    })
   }
+
 }

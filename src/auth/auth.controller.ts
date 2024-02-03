@@ -94,7 +94,10 @@ export class AuthController {
   }
 
   @Post('login')
-  async signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto)
+  async signIn(@Body() signInDto: SignInDto, @Res() res) {
+    const token = await this.authService.signIn(signInDto)
+    return res.json({
+      token
+    })
   }
 }

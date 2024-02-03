@@ -53,7 +53,7 @@ export class AuthService {
     return this.authModel.deleteOne({_id: id})
   }
 
-  async signIn(signInDto: SignInDto): Promise<{access_token: string}> {
+  async signIn(signInDto: SignInDto): Promise<string> {
     const user = await this.authModel.find({ email: signInDto.email })
     if (user[0] === undefined) throw new UnauthorizedException('Email atau password salah')
      
@@ -61,12 +61,10 @@ export class AuthService {
     if(!isMatch) throw new UnauthorizedException("Email atau Password salah")
 
     const payload = { sub: user[0]._id, email: user[0].email }
-    
+    const token = await this.jwtService.signAsync(payload)
     //send data to ws gateway
     this.eventsGateway.onNotifyLogin(payload)
 
-    return {
-      access_token: await this.jwtService.signAsync(payload)
-    }
+    return token
   }
 }
