@@ -1,4 +1,4 @@
-import { IsAlpha, IsNotEmpty, IsString } from "class-validator";
+import { IsAlpha, IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateHeroDto {
     @IsNotEmpty()
@@ -7,4 +7,4 @@ export class CreateHeroDto {
 
     @IsString()
     position: string
-}
+}1

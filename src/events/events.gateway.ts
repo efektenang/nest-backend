@@ -1,7 +1,7 @@
-import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({cors: { origin: '*' }})
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer() server: Server;
@@ -17,10 +17,17 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('notifyLogin')
   onNotifyLogin(user: any) {
     console.log(user)
-    this.server.emit('onMessage', {
+    this.server.emit('notifyLogin', {
       msg: `${user.email} is logged in`,
       data: user
     })
   }
 
+  @SubscribeMessage('message')
+  onMessageWs(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+    this.server.emit('message', {
+      message: data,
+      clientId: client.id
+    })
+  }
 }
