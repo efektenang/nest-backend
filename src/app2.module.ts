@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { HeroModule } from './hero/hero.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,6 +6,8 @@ import { config } from './config';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { ChatModule } from './chat/chat.module';
+import { App2Service } from './app2.service';
+import { App2Controller } from './app2.controller';
 
 @Module({
   imports: [
@@ -24,9 +24,9 @@ import { ChatModule } from './chat/chat.module';
     HeroModule,
     AuthModule,
     EventsModule,
-    ChatModule,
+    ChatModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [App2Controller],
+  providers: [App2Service],
 })
-export class AppModule {}
+export class App2Module {}
