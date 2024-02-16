@@ -5,7 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Auth, AuthSchema } from './schemas/auth.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
-import { EventsGateway } from 'src/events/events.gateway';
 
 @Module({
   imports: [
@@ -22,6 +21,6 @@ import { EventsGateway } from 'src/events/events.gateway';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, EventsGateway],
+  providers: [AuthService],
 })
 export class AuthModule {}

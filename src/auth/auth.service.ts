@@ -7,11 +7,10 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
-import { EventsGateway } from 'src/events/events.gateway';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(Auth.name) private authModel: Model<Auth>, private jwtService: JwtService, private readonly eventsGateway: EventsGateway) {}
+  constructor(@InjectModel(Auth.name) private authModel: Model<Auth>, private jwtService: JwtService) {}
   async create(createAuthDto: CreateAuthDto) {
     
     const saveUser = await this.authModel.create({
@@ -62,7 +61,7 @@ export class AuthService {
     const payload = { sub: user[0]._id, email: user[0].email }
     const token = await this.jwtService.signAsync(payload)
     //send data to ws gateway
-    this.eventsGateway.onNotifyLogin(payload)
+    // this.eventsGateway.onNotifyLogin(payload)
 
     return token
   }
