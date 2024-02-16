@@ -13,12 +13,11 @@ import { ChatModule } from './chat/chat.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [config]
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configSecret: ConfigService) => ({
-        uri: configSecret.get('mongoUri'),
+        uri: configSecret.get('DATABASE_URI'),
       })
     }),
     HeroModule,
