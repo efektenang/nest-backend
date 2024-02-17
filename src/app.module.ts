@@ -8,9 +8,16 @@ import { config } from './config';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { ChatModule } from './chat/chat.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 0,
+      store: redisStore
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
 @Controller('chat')
@@ -29,5 +29,10 @@ export class ChatController {
     const { senderId, recipientId, message } = body;
     this.chatService.forwardMessage(senderId, recipientId, message);
     return { success: true };
+  }
+
+  @Get('client-id')
+  async getClientId() {
+    return this.chatService.getClientIdFromStorage()
   }
 }
