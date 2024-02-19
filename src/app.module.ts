@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { HeroModule } from './hero/hero.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { config } from './config';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { ChatModule } from './chat/chat.module';
@@ -16,7 +15,7 @@ import { redisStore } from 'cache-manager-redis-yet';
     CacheModule.register({
       isGlobal: true,
       ttl: 0,
-      store: redisStore
+      store: redisStore,
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -25,7 +24,7 @@ import { redisStore } from 'cache-manager-redis-yet';
       inject: [ConfigService],
       useFactory: async (configSecret: ConfigService) => ({
         uri: configSecret.get('DATABASE_URI'),
-      })
+      }),
     }),
     HeroModule,
     AuthModule,
