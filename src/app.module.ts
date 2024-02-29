@@ -1,35 +1,28 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { HeroModule } from './hero/hero.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 import { EventsModule } from './events/events.module';
-import { ChatModule } from './chat/chat.module';
 import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-yet';
+import { redisOptions } from './config/redis-options.constants';
+import { mongoOptions } from './config/mongo-options.constants';
+import { RouterModule } from '@nestjs/core';
+import routersConfig, {
+  destructModuleFromRoutes,
+} from './config/routers.config';
 
 @Module({
   imports: [
-    CacheModule.register({
-      isGlobal: true,
-      ttl: 0,
-      store: redisStore,
-    }),
     ConfigModule.forRoot({
+      envFilePath: [`.env.${process.env.NEST_ENV}`],
       isGlobal: true,
     }),
-    MongooseModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: async (configSecret: ConfigService) => ({
-        uri: configSecret.get('DATABASE_URI'),
-      }),
-    }),
-    HeroModule,
-    AuthModule,
+    CacheModule.registerAsync(redisOptions),
+    MongooseModule.forRootAsync(mongoOptions),
+    ...destructModuleFromRoutes(routersConfig),
+    RouterModule.register(routersConfig),
     EventsModule,
-    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

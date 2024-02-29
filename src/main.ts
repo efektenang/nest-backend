@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisIoAdapter } from './RedisIoAdapter';
+import { RedisIoAdapter } from './config/RedisIoAdapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

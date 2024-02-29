@@ -4,7 +4,10 @@ import { ChatGateway } from 'src/events/chat.gateway';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly chatGateway: ChatGateway, @Inject('CACHE_MANAGER') private cacheManager: Cache) {}
+  constructor(
+    private readonly chatGateway: ChatGateway,
+    @Inject('CACHE_MANAGER') private cacheManager: Cache,
+  ) {}
 
   broadcastMessage(message: string) {
     this.chatGateway.handleMessage(message);
@@ -21,8 +24,9 @@ export class ChatService {
   }
 
   async getClientIdFromStorage() {
-    let cachedData: {id: string}[] = await this.cacheManager.get('socketClients')
+    let cachedData: { id: string }[] =
+      await this.cacheManager.get('socketClients');
 
-    return cachedData
+    return cachedData;
   }
 }

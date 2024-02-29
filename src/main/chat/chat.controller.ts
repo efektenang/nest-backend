@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
-@Controller('chat')
+@Controller()
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
@@ -33,6 +33,6 @@ export class ChatController {
 
   @Get('client-id')
   async getClientId() {
-    return this.chatService.getClientIdFromStorage()
+    return this.chatService.getClientIdFromStorage();
   }
 }

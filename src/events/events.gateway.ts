@@ -11,8 +11,8 @@ import {
 } from '@nestjs/websockets';
 import { Cache } from 'cache-manager';
 import { Server, Socket } from 'socket.io';
-import { WsJwtGuard } from 'src/auth/ws-jwt/ws-jwt.guard';
-import { SocketAuthMiddleware } from 'src/auth/ws-jwt/ws.middleware';
+import { WsJwtGuard } from 'src/main/auth/ws-jwt/ws-jwt.guard';
+import { SocketAuthMiddleware } from 'src/main/auth/ws-jwt/ws.middleware';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 @UseGuards(WsJwtGuard)
@@ -24,7 +24,7 @@ export class EventsGateway
   constructor(@Inject('CACHE_MANAGER') private cacheManager: Cache) {}
 
   afterInit(client: Socket) {
-    client.use(SocketAuthMiddleware() as any)
+    client.use(SocketAuthMiddleware() as any);
     Logger.log('Socket server initalized...', 'WebSocketInitialize');
   }
 

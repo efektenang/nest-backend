@@ -17,22 +17,25 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   @Header('Content-Type', 'application/json')
   async create(@Body() createAuthDto: CreateAuthDto, @Res() res) {
-    return this.authService.create(createAuthDto).then((ok) => {
-      return res.status(201).json({
-        data: ok
+    return this.authService
+      .create(createAuthDto)
+      .then((ok) => {
+        return res.status(201).json({
+          data: ok,
+        });
       })
-    }).catch((err) => {
-      return res.status(err.status).json({
-        error: err.response
-      })
-    })
+      .catch((err) => {
+        return res.status(err.status).json({
+          error: err.response,
+        });
+      });
   }
 
   @Get()
@@ -50,54 +53,58 @@ export class AuthController {
   @HttpCode(200)
   async findOne(@Param('id') id: any, @Res() res) {
     try {
-      const result = await this.authService.findOne(id)
+      const result = await this.authService.findOne(id);
       return res.json({
-        message: "OK",
-        data: result
-      })
+        message: 'OK',
+        data: result,
+      });
     } catch (error) {
       res.json({
-        message: error.message
-      })
+        message: error.message,
+      });
     }
   }
 
   @Patch('update/:id')
-  @Header("Content-Type", "application/json")
-  async update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto, @Res() res) {
+  @Header('Content-Type', 'application/json')
+  async update(
+    @Param('id') id: string,
+    @Body() updateAuthDto: UpdateAuthDto,
+    @Res() res,
+  ) {
     try {
-      const response = await this.authService.update(id, updateAuthDto)
+      const response = await this.authService.update(id, updateAuthDto);
       res.json({
         message: 'OK',
-        updateCount: response.modifiedCount
-      })
+        updateCount: response.modifiedCount,
+      });
     } catch (error) {
       res.status(error.status).json({
-        error: error.response
-      })
+        error: error.response,
+      });
     }
   }
 
   @Delete('delete/:id')
   async remove(@Param('id') id: string, @Res() res) {
     try {
-      const response = await this.authService.remove(id)
+      const response = await this.authService.remove(id);
       res.json({
-        message: "OK",
-        deleteCount: response.deletedCount
-      })
+        message: 'OK',
+        deleteCount: response.deletedCount,
+      });
     } catch (error) {
       res.status(500).json({
-        message: error.message
-      })
+        message: error.message,
+      });
     }
   }
 
   @Post('login')
   async signIn(@Body() signInDto: SignInDto, @Res() res) {
-    const token = await this.authService.signIn(signInDto)
+    const token = await this.authService.signIn(signInDto);
     return res.json({
-      token
-    })
+      token,
+    });
   }
 }

@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { verify } from 'jsonwebtoken';
 import { Observable } from 'rxjs';
 import { Socket } from 'socket.io';
@@ -10,18 +15,18 @@ export class WsJwtGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     if (context.getType() !== 'ws') {
-      return true
+      return true;
     }
     const client: Socket = context.switchToWs().getClient<Socket>();
-    WsJwtGuard.validateToken(client)
+    WsJwtGuard.validateToken(client);
 
     return true;
   }
 
   static validateToken(client: Socket) {
     const authToken = client.handshake?.headers?.authorization;
-    const token: string = authToken.split(' ')[1]
-    const payload = verify(token, jwtConstants.secret)
-    return payload
+    const token: string = authToken.split(' ')[1];
+    const payload = verify(token, jwtConstants.secret);
+    return payload;
   }
 }
